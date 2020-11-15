@@ -1,0 +1,8 @@
+fuzzywuzzy
+python-Levenshtein
+bibtexparser
+requests
+falcon
+dataclasses
+dataclasses-json
+shortuuid

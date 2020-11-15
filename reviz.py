@@ -7,6 +7,7 @@ import os
 import json
 from views.graph_view import view_sugiyama, view_sugiyama_summary
 from utils.utils import bib_to_json
+from api.falcon_api import FalconAPI
 
 parser = argparse.ArgumentParser()
 parser.add_argument("action", help="""
@@ -16,7 +17,7 @@ parser.add_argument("action", help="""
 (4) draw: generate pdf of citation graph
 (5) draw-summary: include optimalisations for the citation graph
 (6) flow: generate flow diagram, only possible if using parsifal export
-""", choices=["bib2json", "grobid", "flow", "graph-model", "draw", "draw-summary"])
+""", choices=["bib2json", "grobid", "flow", "graph-model", "draw", "draw-summary", "falcon-api"])
 parser.add_argument("json", help="path for json-file")
 
 parser.add_argument("--bib-file", help="path for input bib-file, will be written to parameter 'json'", type=str, default=None)
@@ -29,7 +30,7 @@ parser.add_argument("--transitivities", help="reduce number of edges by consider
 parser.add_argument("--transitivities-bold", help="adapt line width of transitive edges", action="store_true")
 parser.add_argument("--citation-counts", help="show number of direct and indirect citations for every node", action="store_true")
 parser.add_argument("--authors-colored", help="threshold for showing publications with same authors using colors, use a value between 0 and 1", type=float, default=-1 )
-
+parser.add_argument("--falcon-port", help="Port to serve the Falcon API on, default 9090", default=9090, type=int)
 args = parser.parse_args()
 
 if args.action == "bib2json":
@@ -64,3 +65,6 @@ if 'draw' in args.action:
                               args.citation_counts, args.authors_colored)
     if args.bib:
         run_bib(args.tex)
+
+if args.action == "falcon-api":
+    FalconAPI().execute_hook(args.falcon_port)
